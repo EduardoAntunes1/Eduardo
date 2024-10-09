@@ -1,0 +1,35 @@
+package Principal;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Principal {
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Quantos produtos deseja informar? ");
+		int escolhaUsuario = scanner.nextInt();
+		List<Itens> listaItens = new ArrayList<Itens>();
+		
+		for (int i = 0; i < escolhaUsuario; i++) {
+			System.out.println("Entre com o nome do produto: ");
+			String nome = scanner.next();
+			System.out.println("Entre com o preço do produto: ");
+			Double preco = scanner.nextDouble();
+			System.out.println("Entre com a quantidade de produtos: ");
+			Integer quantidade = scanner.nextInt();
+			
+			Itens itens = new Itens(nome,quantidade,preco);
+			listaItens.add(itens);
+		}
+		
+		System.out.println("\nLista Produtos: ");
+		for (Itens itens : listaItens) {
+			System.out.println(itens);
+		}
+		
+
+	}
+
+}
