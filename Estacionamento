@@ -1,0 +1,200 @@
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+
+class Vaga {
+    private int numero;
+    private String tamanho;
+    private boolean ocupada;
+    private Veiculo veiculo;
+
+    public Vaga(int numero, String tamanho) {
+        this.numero = numero;
+        this.tamanho = tamanho;
+        this.ocupada = false;
+        this.veiculo = null;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public String getTamanho() {
+        return tamanho;
+    }
+
+    public boolean isOcupada() {
+        return ocupada;
+    }
+
+    public void ocupar(Veiculo veiculo) {
+        this.ocupada = true;
+        this.veiculo = veiculo;
+    }
+
+    public void liberar() {
+        this.ocupada = false;
+        this.veiculo = null;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+}
+
+class Veiculo {
+    private String placa;
+    private String modelo;
+    private String tamanho;
+    private Date horaEntrada;
+    private Date horaSaida;
+
+    public Veiculo(String placa, String modelo, String tamanho) {
+        this.placa = placa;
+        this.modelo = modelo;
+        this.tamanho = tamanho;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public String getTamanho() {
+        return tamanho;
+    }
+
+    public void setHoraEntrada(Date horaEntrada) {
+        this.horaEntrada = horaEntrada;
+    }
+
+    public void setHoraSaida(Date horaSaida) {
+        this.horaSaida = horaSaida;
+    }
+
+    public Date getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public Date getHoraSaida() {
+        return horaSaida;
+    }
+}
+
+class Estacionamento {
+    private ArrayList<Vaga> vagas;
+    private ArrayList<Veiculo> veiculos;
+
+    public Estacionamento() {
+        vagas = new ArrayList<>();
+        veiculos = new ArrayList<>();
+    }
+
+    public void cadastrarVaga(int numero, String tamanho) {
+        vagas.add(new Vaga(numero, tamanho));
+    }
+
+    public void cadastrarVeiculo(String placa, String modelo, String tamanho) {
+        veiculos.add(new Veiculo(placa, modelo, tamanho));
+    }
+
+    public void entradaVeiculo(String placa) {
+        Veiculo veiculo = encontrarVeiculo(placa);
+        if (veiculo == null) {
+            System.out.println("Veículo não encontrado.");
+            return;
+        }
+
+        for (Vaga vaga : vagas) {
+            if (!vaga.isOcupada() && vaga.getTamanho().equals(veiculo.getTamanho())) {
+                vaga.ocupar(veiculo);
+                veiculo.setHoraEntrada(new Date());
+                System.out.println("Veículo " + placa + " estacionado na vaga " + vaga.getNumero() + ".");
+                return;
+            }
+        }
+        System.out.println("Não há vagas disponíveis compatíveis.");
+    }
+
+    public void saidaVeiculo(String placa) {
+        Veiculo veiculo = encontrarVeiculo(placa);
+        if (veiculo == null || veiculo.getHoraEntrada() == null) {
+            System.out.println("Veículo não encontrado ou não está estacionado.");
+            return;
+        }
+
+        for (Vaga vaga : vagas) {
+            if (vaga.getVeiculo() != null && vaga.getVeiculo().getPlaca().equals(placa)) {
+                veiculo.setHoraSaida(new Date());
+                double valor = calcularValor(veiculo.getHoraEntrada(), veiculo.getHoraSaida());
+                vaga.liberar();
+                System.out.println("Veículo " + placa + " saiu da vaga " + vaga.getNumero() + ". Valor a pagar: R$ " + String.format("%.2f", valor) + ".");
+                return;
+            }
+        }
+    }
+
+    private double calcularValor(Date entrada, Date saida) {
+        long tempo = (saida.getTime() - entrada.getTime()) / (1000 * 60 * 60); // Tempo em horas
+        if (tempo <= 1) {
+            return 5.00;
+        } else if (tempo <= 3) {
+            return 10.00;
+        } else {
+            return 15.00;
+        }
+    }
+
+    private Veiculo encontrarVeiculo(String placa) {
+        for (Veiculo v : veiculos) {
+            if (v.getPlaca().equals(placa)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    public void relatorioVagasOcupadas() {
+        System.out.println("Relatório de Vagas Ocupadas:");
+        for (Vaga vaga : vagas) {
+            if (vaga.isOcupada()) {
+                System.out.println("Vaga: " + vaga.getNumero() + ", Tamanho: " + vaga.getTamanho() + ", Veículo: " + vaga.getVeiculo().getPlaca());
+            }
+        }
+    }
+
+    public void historicoVeiculos() {
+        System.out.println("Histórico de Permanência dos Veículos:");
+        for (Veiculo veiculo : veiculos) {
+            if (veiculo.getHoraSaida() != null) {
+                System.out.println("Placa: " + veiculo.getPlaca() +
+                                   ", Entrada: " + veiculo.getHoraEntrada() +
+                                   ", Saída: " + veiculo.getHoraSaida() +
+                                   ", Valor Pago: R$ " + String.format("%.2f", calcularValor(veiculo.getHoraEntrada(), veiculo.getHoraSaida())) + ".");
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Estacionamento estacionamento = new Estacionamento();
+        estacionamento.cadastrarVaga(1, "pequeno");
+        estacionamento.cadastrarVaga(2, "médio");
+        estacionamento.cadastrarVaga(3, "grande");
+
+        estacionamento.cadastrarVeiculo("ABC1234", "Fusca", "pequeno");
+        estacionamento.cadastrarVeiculo("XYZ5678", "Civic", "médio");
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Digite a placa do veículo para entrada: ");
+        String placaEntrada = scanner.nextLine();
+        estacionamento.entradaVeiculo(placaEntrada);
+
+        System.out.print("Digite a placa do veículo para saída: ");
+        String placaSaida = scanner.nextLine();
+        estacionamento.saidaVeiculo(placaSaida);
+
+        estacionamento.relatorioVagasOcupadas();
+        estacionamento.historicoVeiculos();
+    }
+}
