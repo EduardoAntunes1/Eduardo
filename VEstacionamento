@@ -1,86 +1,10 @@
+package estacionamento;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-class Vaga {
-    private int numero;
-    private String tamanho;
-    private boolean ocupada;
-    private Veiculo veiculo;
-
-    public Vaga(int numero, String tamanho) {
-        this.numero = numero;
-        this.tamanho = tamanho;
-        this.ocupada = false;
-        this.veiculo = null;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public String getTamanho() {
-        return tamanho;
-    }
-
-    public boolean isOcupada() {
-        return ocupada;
-    }
-
-    public void ocupar(Veiculo veiculo) {
-        this.ocupada = true;
-        this.veiculo = veiculo;
-    }
-
-    public void liberar() {
-        this.ocupada = false;
-        this.veiculo = null;
-    }
-
-    public Veiculo getVeiculo() {
-        return veiculo;
-    }
-}
-
-class Veiculo {
-    private String placa;
-    private String modelo;
-    private String tamanho;
-    private Date horaEntrada;
-    private Date horaSaida;
-
-    public Veiculo(String placa, String modelo, String tamanho) {
-        this.placa = placa;
-        this.modelo = modelo;
-        this.tamanho = tamanho;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public String getTamanho() {
-        return tamanho;
-    }
-
-    public void setHoraEntrada(Date horaEntrada) {
-        this.horaEntrada = horaEntrada;
-    }
-
-    public void setHoraSaida(Date horaSaida) {
-        this.horaSaida = horaSaida;
-    }
-
-    public Date getHoraEntrada() {
-        return horaEntrada;
-    }
-
-    public Date getHoraSaida() {
-        return horaSaida;
-    }
-}
-
-class Estacionamento {
+public class Estacionamento {
     private ArrayList<Vaga> vagas;
     private ArrayList<Veiculo> veiculos;
 
@@ -173,9 +97,7 @@ class Estacionamento {
             }
         }
     }
-}
 
-public class Main {
     public static void main(String[] args) {
         Estacionamento estacionamento = new Estacionamento();
         estacionamento.cadastrarVaga(1, "pequeno");
